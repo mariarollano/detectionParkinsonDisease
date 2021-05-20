@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html> 
+  
+<head>
+<br>
+<style>
+body{
+  background-color: #E3EAF0;
+}
+h1 {
+  color: white;
+  font-family: helvetica;
+  font-size: 150%;
+  text-align: center;
+  background-color: #859CB1;
+}
+h2 {
+  color: #778A9B;
+  font-family: helvetica;
+  font-size: 100%;
+  padding-left: 5px;
+}
+p {
+  color: #939EA6 ;
+  font-family: helvetica;
+  font-size: 100%;
+  padding-left: 30px;
+}
+</style>
+</head> 
+  
+<body> 
+<h1><b>EXERCISE 1</b></h1>
+<h2>To perform this exercise: </h2>
+<p> 1. Press the start button </p>
+<p>2. Move your hand to the stop button </p>
+  <button type="button" id="start" style="position: absolute; width: 200px; height: 50px; top: 600px; left: 675px; BACKGROUND-COLOR:#F2F6F9" onclick="document.getElementById('start').style.backgroundColor = '#BDDC82';"/> <b> START </b></button>
+  <button type="button" id="stop" style="position: absolute; width: 200px; height: 50px; top: 90px; right: 20px; BACKGROUND-COLOR:#FBAFAF "/> <b> STOP </b></button>
+
+<script type="text/javascript">
+
+//declaration of variables:
+var x_coordinate = [];
+var y_coordinate = [];
+var data;
+var counter1;
+var counter2;
+var signs = [];
+var signs2 = [];
+var data2;
+var actual;
+var sub;
+var milliseconds;
+
+
+document.getElementById('start').addEventListener('click',startFunction);
+
+function coordinate(event) {
+  var x = event.clientX; 
+  var y = event.clientY; 
+  var millisecondsFromNow = (new Date()).getTime() - milliseconds;
+  data += event.clientX + ', ' + event.clientY + ',' + ' ' + millisecondsFromNow + '\n';
+  x_coordinate.push(x);
+  y_coordinate.push(y);
+} 
+
+function startFunction(){
+  //initialization of variables
+  x_coordinate = [];
+  y_coordinate = [];
+  data = " x ,  y,  ms \n";
+  counter1=0; //for the number of right-left tremors
+  counter2=0; //for the number of up-down tremors
+  signs = [];
+  signs2 = [];
+  data2 = "";
+  actual=new Date();
+  milliseconds = actual.getTime()
+  sub=0;
+
+  //listeners declaration
+  document.getElementById('stop').addEventListener('click',stopFunction);
+  document.addEventListener('mousemove',coordinate);
+}
+
+ 
+function stopFunction(){
+  //number of right-left tremors:
+  for (i=0;i<(x_coordinate.length)-2;i++){
+    sub= x_coordinate [ i + 1]- x_coordinate [i];
+    if (sub != 0 ){
+          signs [i] =Math.sign(sub)
+    }
+  }
+
+  for (i=0;i<signs.length-2;i++){
+    if (signs [i] == 1 && signs[i+1]==-1){
+      counter1 = counter1 +1;}
+    if (signs[i]== -1 && signs[i+1]==1){
+      counter1 = counter1 +1;}
+  }
+
+//number of up-down tremors:
+  for (j=0;j<(y_coordinate.length)-2;j++){
+    var resta2= y_coordinate [ j + 1]- y_coordinate [j];
+    if (resta2 !=0 ){
+          signs2 [j] =Math.sign(resta2)
+    }
+  }
+
+  for (j=0;j<signs2.length-2;j++){
+    if (signs2 [j] == 1 && signs2[j+1]==-1){
+      counter2 = counter2 +1;
+    }
+
+    if (signs2[j]== -1 && signs2[j+1]==1){
+      counter2 = counter2 +1;
+    }
+  }
+
+  //to download data in a .txt file:
+  data2 = 'number of right-left tremors: ' + counter1 + '\n' + 'number of up-down tremors: ' + counter2 + '\n';  
+  const a = document.createElement('a');
+  const file = new Blob([data, data2], {type: 'text/plain'});
+  a.href= URL.createObjectURL(file);
+  a.download = 'exercise1.txt';
+  a.click();
+  URL.revokeObjectURL(a.href); 
+}
+
+</script>
+</body> 
+</html> 
